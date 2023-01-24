@@ -1,0 +1,53 @@
+Just a sketch
+the game will be made of ascci characters
+
+server verify client is expected client with a hash of the client code
+client sends hash
+server asks for password and name or another login method
+client sends required details
+server sends all other players positions
+server sends world info
+
+Game loop begin
+player does stuff
+client sends packets
+server processes packets
+client receives packets
+client updates screen
+Game loop end
+
+
+PACKETS
+
+CLIENT
+alive_packet:
+    sent every 5-10 seconds, if the alive_packet isn't sent, the server will send a timeout_packet, disconnecting the client.
+    "alive"
+timeout_packet:
+    not processing this on the client will generate an error, as the server is not listening.
+    "timeout"
+pos_packet:
+    sent every movement, cannot exceed a certain position change(speed).
+    "move x y"
+interact_packet:
+    action may be:
+        hit -> try to hit it(If it hits a block, instamine it)
+        access
+    "interactblock x y action" or "interactentity entity action".
+message_packet:
+    "message 'message'"
+
+SERVER
+invalid_packet:
+    say the previous packet was invalid
+    "invalid move";
+    "invalid interact"
+
+more to come!
+
+CHARACTERS
+C: chest
+~~: water
+**: grass
+SS: stone
+0: player

@@ -1,0 +1,2 @@
+You cannot change the server.py file.
+But you can read it as if you gained source code access to the server code
