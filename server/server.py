@@ -16,7 +16,7 @@ class player():
 def dist(pos1, pos2) -> int:
     return max(abs(pos1[0]-pos2[0]), abs(pos1[1]-pos2[1]))
 
-def distribute(client_list: list, packet, own_id):
+def distribute(client_list: list, packet: bytes, own_id):
     for client in client_list:
         if client[1].ID == own_id: continue
         client[1].conn.send(packet)
@@ -38,16 +38,20 @@ def handle_packets(packet: str, player_obj: player):
     
     return
     
-        
+
+def receive_sockets(server):
+    pass
 
 
 
 
 
 
-
+'''
 with open("config.txt", "r") as f:
     SIZE = int(f.readline().rsplit(" ")[1]) # read the first line of the file then get the second word , which is the 'SIZE' variable
+'''
+SIZE = 10
 WORLD = [["**" for _ in range(SIZE)] for _ in range(SIZE)]
 
 
@@ -64,7 +68,7 @@ WORLD = [["**" for _ in range(SIZE)] for _ in range(SIZE)]
 #SETUP
 client_list = []
 ids = 0 #Figurative ids
-TotalIds = 0 #Actual ids
+TotalIds = 0 #Number of ids
 #SETUP
 
 
@@ -74,9 +78,10 @@ def handle_client(conn, addr, ID):
     name = conn.recv(1024)
     print(name)
     C = player(name, ID, conn, addr)
-    client_list[TotalIds-1].append(C)
+    client_list[TotalIds-1].append(C)#Might bug out if 2 players join at the same time(~10ms?)
 
     conn.send(pickle.dumps(WORLD))
+    conn.send(client_list[TotalIds])
 
     PastTime = time.time()
     while True:
@@ -94,6 +99,8 @@ def handle_client(conn, addr, ID):
     conn.close() #timeout or client has exited
     client_list.pop(TotalIds)
     TotalIds -= 1
+    distribute(client_list, pickle.dumps("CLIENTEXIT"))
+    distribute(client_list, pickle.dumps(client_list), 'Never used')
     print("client exited")
 
 
@@ -110,7 +117,7 @@ while True:
     print("listening")
     conn, addr = s.accept()
     thread = threading.Thread(target=handle_client, args=(conn, addr, ids))
-    client_list.append([thread]) #A player object will be added later
+    client_list.append([thread]) #A player object will be added later into the list appended to the client list in the new thread
     thread.start()
     ids+=1
     TotalIds+=1

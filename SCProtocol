@@ -31,8 +31,8 @@ pos_packet:
     "move x y"
 interact_packet:
     action may be:
-        hit -> try to hit it(If it hits a block, instamine it)
-        access
+        use -> left click
+        interact -> right click
     "interactblock x y action" or "interactentity entity action".
 message_packet:
     "message 'message'"

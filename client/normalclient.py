@@ -20,16 +20,16 @@ class Player():
 
 def handle_keys(server: socket.socket, player: Player, KeysPressed):
     if KeysPressed[K_w]:
-        #server.send(f"move {player.pos[0]} {player.pos[1]-1}".encode('utf-8'))
+        #server.sendall(f"move {player.pos[0]} {player.pos[1]-1}".encode('utf-8'))
         player.pos[1]-=2
     if KeysPressed[K_s]:
-        #server.send(f"move {player.pos[0]} {player.pos[1]+1}".encode('utf-8'))
+        #server.sendall(f"move {player.pos[0]} {player.pos[1]+1}".encode('utf-8'))
         player.pos[1]+=2
     if KeysPressed[K_a]:
-        #server.send(f"move {player.pos[0]-1} {player.pos[1]}".encode('utf-8'))
+        #server.sendall(f"move {player.pos[0]-1} {player.pos[1]}".encode('utf-8'))
         player.pos[0]-=2
     if KeysPressed[K_d]:
-        #server.send(f"move {player.pos[0]+1} {player.pos[1]}".encode('utf-8'))
+        #server.sendall(f"move {player.pos[0]+1} {player.pos[1]}".encode('utf-8'))
         player.pos[0]+=2
 
 
@@ -77,7 +77,7 @@ World[1][1] = '**'
 
 player = Player()
 Players = [player] #
-
+#Players.append(pickle.loads(s.recv(4096)))
 
 FPS = 60
 clock = pygame.time.Clock()
@@ -93,7 +93,7 @@ while not exiting:
     KeysPressed = pygame.key.get_pressed()
     if KeysPressed[K_e]:
         exiting = True
-        #s.send(b"exit")
+        #s.sendall(b"exit")
         continue #Exit the loop
     
     IsClicked = pygame.mouse.get_pressed()
@@ -102,6 +102,6 @@ while not exiting:
     update(s, KeysPressed, World, Players)
 
     if time() - ctime >= 5:
-        #s.send(b"alive")
+        #s.sendall(b"alive")
         ctime = time()
     pygame.display.update()
