@@ -4,12 +4,10 @@ import threading
 import pickle
 
 class player():
-    def __init__(self, name, ID, conn, addr) -> None:
+    def __init__(self, name, ID) -> None:
         self.pos = [0, 0]
         self.name = name
         self.ID = ID
-        self.conn = conn
-        self.addr = addr
 
         self.timeout = 10
 
@@ -37,10 +35,6 @@ def handle_packets(packet: str, player_obj: player):
         player_obj.addr.send(b"invalid move")
     
     return
-    
-
-def receive_sockets(server):
-    pass
 
 
 
@@ -77,11 +71,12 @@ def handle_client(conn, addr, ID):
     print(f"Connected to {addr}: ", end="")
     name = conn.recv(1024)
     print(name)
-    C = player(name, ID, conn, addr)
+    C = player(name, ID)
     client_list[TotalIds-1].append(C)#Might bug out if 2 players join at the same time(~10ms?)
 
     conn.send(pickle.dumps(WORLD))
-    conn.send(client_list[TotalIds])
+    time.sleep(0.1)
+    conn.send(pickle.dumps(client_list))
 
     PastTime = time.time()
     while True:
@@ -99,8 +94,7 @@ def handle_client(conn, addr, ID):
     conn.close() #timeout or client has exited
     client_list.pop(TotalIds)
     TotalIds -= 1
-    distribute(client_list, pickle.dumps("CLIENTEXIT"))
-    distribute(client_list, pickle.dumps(client_list), 'Never used')
+    distribute(client_list, pickle.dumps(client_list), 'Never used')#Check the first item of the list to check if it's a client list
     print("client exited")
 
 
