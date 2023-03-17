@@ -79,7 +79,7 @@ def DrawBlock(Block, pos):
 
 def draw_players(Players):
     for i in range(len(Players)):
-        SCREEN.blit(Players[i].image, Players[i].pos)
+        SCREEN.blit(Players[i][1].image, Players[i].pos)
 
 
 def update(s, KeysPressed, World, Players: list = []):
@@ -104,7 +104,7 @@ s.connect((HOST, PORT))
 print("connected")
 
 Server_packets = []
-Server_handler = Thread(target=handle_server, args= (s))
+Server_handler = Thread(target=handle_server, args= [s])
 Server_handler.start()
 Name = "Bhatck"
 s.sendall(bytes(Name, 'utf-8')) #Send name

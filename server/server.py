@@ -72,11 +72,13 @@ def handle_client(conn, addr, ID):
     name = conn.recv(1024)
     print(name)
     C = player(name, ID)
-    client_list[TotalIds-1].append(C)#Might bug out if 2 players join at the same time(~10ms?)
+    client_list[TotalIds-2].append(C)#Might bug out if 2 players join at the same time(~10ms?)
 
     conn.send(pickle.dumps(WORLD))
     time.sleep(0.1)
-    conn.send(pickle.dumps(client_list))
+    tmp = client_list.pop(TotalIds-1)
+    conn.send(pickle.dumps(client_list))#Also might bug out
+    client_list.append(tmp)
 
     PastTime = time.time()
     while True:
